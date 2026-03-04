@@ -1,7 +1,10 @@
 import "dotenv/config";
 
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUI from "@fastify/swagger-ui";
 import Fastify from "fastify";
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -15,12 +18,33 @@ const app = Fastify({
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+await app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: "Treinos API",
+      description: "API para gerenciamento de treinos",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        description: "Localhost",
+        url: "http://localhost:8080",
+      },
+    ],
+  },
+  transform: jsonSchemaTransform,
+});
+
+await app.register(fastifySwaggerUI, {
+  routePrefix: "/docs",
+});
+
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/",
   schema: {
     description: "Hello world",
-    tags: ["Hello World"],
+    tags: ["Hello world"],
     response: {
       200: z.object({
         message: z.string(),
@@ -29,13 +53,13 @@ app.withTypeProvider<ZodTypeProvider>().route({
   },
   handler: () => {
     return {
-      message: "Hello World",
+      message: "Hello world",
     };
   },
 });
 
 try {
-  await app.listen({ port: Number(process.env.PORT) || 8081 });
+  await app.listen({ port: Number(process.env.PORT) || 8080 });
 } catch (err) {
   app.log.error(err);
   process.exit(1);
