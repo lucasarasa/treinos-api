@@ -48,7 +48,7 @@ export class CreateWorkoutPlan {
         isActive: true,
       },
     });
-    // Transaction - Atomicidade
+    // Transaction - Atomicidade (todas as operações devem ser concluídas com sucesso ou nenhuma delas deve ser aplicada)
     return prisma.$transaction(async (tx) => {
       if (existingWorkoutPlan) {
         await tx.workoutPlan.update({
