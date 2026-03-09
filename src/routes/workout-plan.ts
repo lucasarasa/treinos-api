@@ -44,7 +44,7 @@ export const workoutPlanRoute = async (app: FastifyInstance) => {
         if (error instanceof NotFoundError) {
           return reply.status(404).send({
             error: error.message,
-            code: "NOT_FOUND",
+            code: "NOT_FOUND_ERROR",
           });
         }
         return reply.status(500).send({
