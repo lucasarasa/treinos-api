@@ -14,6 +14,7 @@ import z from "zod";
 
 import { auth } from "./lib/auth.js";
 import { homeRoutes } from "./routes/home.js";
+import { statsRoutes } from "./routes/stats.js";
 import { workoutPlanRoutes } from "./routes/workout-plan.js";
 
 const app = Fastify({
@@ -26,8 +27,8 @@ app.setSerializerCompiler(serializerCompiler);
 await app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: "Treinos API",
-      description: "API para gerenciamento de treinos",
+      title: "Bootcamp Treinos API",
+      description: "API para o bootcamp de treinos do FSC",
       version: "1.0.0",
     },
     servers: [
@@ -40,10 +41,6 @@ await app.register(fastifySwagger, {
   transform: jsonSchemaTransform,
 });
 
-// await app.register(fastifySwaggerUI, {
-//   routePrefix: "/docs",
-// });
-
 await app.register(fastifyCors, {
   origin: ["http://localhost:3000"],
   credentials: true,
@@ -54,8 +51,8 @@ await app.register(fastifyApiReference, {
   configuration: {
     sources: [
       {
-        title: "Treinos API",
-        slug: "treinos-api",
+        title: "Bootcamp Treinos API",
+        slug: "bootcamp-treinos-api",
         url: "/swagger.json",
       },
       {
@@ -67,8 +64,10 @@ await app.register(fastifyApiReference, {
   },
 });
 
+// RESTful
 // Routes
 await app.register(homeRoutes, { prefix: "/home" });
+await app.register(statsRoutes, { prefix: "/stats" });
 await app.register(workoutPlanRoutes, { prefix: "/workout-plans" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
@@ -87,7 +86,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
   url: "/",
   schema: {
     description: "Hello world",
-    tags: ["Hello world"],
+    tags: ["Hello World"],
     response: {
       200: z.object({
         message: z.string(),
@@ -96,7 +95,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
   },
   handler: () => {
     return {
-      message: "Hello world",
+      message: "Hello World",
     };
   },
 });
@@ -137,7 +136,7 @@ app.route({
 });
 
 try {
-  await app.listen({ port: Number(process.env.PORT) || 8080 });
+  await app.listen({ port: Number(process.env.PORT) || 8081 });
 } catch (err) {
   app.log.error(err);
   process.exit(1);
