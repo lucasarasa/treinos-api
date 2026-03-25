@@ -46,6 +46,7 @@ export class CreateWorkoutPlan {
     const existingWorkoutPlan = await prisma.workoutPlan.findFirst({
       where: {
         isActive: true,
+        userId: dto.userId,
       },
     });
     // Transaction - Atomicidade (todas as operações devem ser concluídas com sucesso ou nenhuma delas deve ser aplicada)
